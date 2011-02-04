@@ -1,0 +1,14 @@
+Billards by Paul George
+
+These files are in a package called bounce.
+So to compile it:
+
+cd ~
+mkdir bounce
+<copy all files to bounce>
+From ~ run:
+javac bounce/*.java
+java bounce.Main
+
+paul@paulgeorge.com
+
