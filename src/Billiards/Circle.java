@@ -2,6 +2,7 @@ package Billiards;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -10,6 +11,7 @@ public class Circle {
 	public Color color;
 	public int size;
 
+	public Point center;
 	public double x;
 	public double y;
 	public double dx;
@@ -29,6 +31,8 @@ public class Circle {
 		this.name = name;
 		this.color = color;
 		this.size = size;
+		this.center = new Point();
+		this.center.setLocation(x, y);
 		this.x = x;
 		this.y = y;
 

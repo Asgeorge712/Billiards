@@ -70,10 +70,11 @@ public class Engine implements Runnable {
      *******************************************************************************/
    	public static boolean calcCollision(Circle i, Circle j ) {
    		double dx = i.x - j.x;
-   		double dy = i.y - j.y;
+   		double dy = i.y - j.y; 
 
    		double d2 =  dx * dx + dy * dy;
-
+   		//double d2 = i.center.distanceSq(j.center);
+   		
    		if ( d2 < 900 )  {
    			double kii, kji, kij, kjj;
    			kji = (dx * i.dx + dy * i.dy) / d2; // k of j due to i
