@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 import java.awt.*;
 import java.awt.event.*;

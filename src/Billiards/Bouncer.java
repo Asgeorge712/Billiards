@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -147,8 +147,10 @@ public class Bouncer extends JFrame implements ActionListener {
         if (s.equals("Exit Game"))
             System.exit(0);
 
-        else if (s.equals("New Game"))
-           table.populateCircles();
+        else if (s.equals("New Game")) {
+        	System.out.println("New Game.");
+        	table.newGame();
+        }
 
         else if (s.equals("Friction"))
             table.engine.toggleFriction();

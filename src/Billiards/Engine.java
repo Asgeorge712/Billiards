@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 import java.awt.*;
 import java.util.*;
@@ -10,7 +10,6 @@ import java.util.*;
  *
  Issues:	When one ball is on the table with the Que ball, the aim is off.
  			The timing is off as less and less balls are on the table.
-
 
  * @author Paul George
  */
@@ -197,6 +196,8 @@ public class Engine implements Runnable {
 	***************************************************************/
 	private boolean checkPockets( Circle c ) {
 
+		if ( table.movingQ ) return false;
+		
 		for ( Pocket p : table.pockets ) {
 			double pocketRadius = p.size/2;
 			double circleRadius = c.size/2;

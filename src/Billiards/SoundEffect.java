@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 import java.io.*;
 import java.net.URL;
@@ -14,9 +14,9 @@ import javax.sound.sampled.*;
  * 4. You can use the static variable SoundEffect.volume to mute the sound.
  */
 public enum SoundEffect {
-   HIT("bounce/hit.wav"),		// A Ball being hit
-   SINK("bounce/sink.wav"),	// A Ball falling in a Pocket
-   QUEUE("bounce/queue.wav");	// The queue Ball being hit.
+   HIT("sounds/hit.wav"),		// A Ball being hit
+   SINK("sounds/sink.wav"),	// A Ball falling in a Pocket
+   QUE("sounds/queue.wav");	// The queue Ball being hit.
 
    // Nested class for specifying volume
    public static enum Volume {
@@ -31,20 +31,51 @@ public enum SoundEffect {
    // Constructor to construct each element of the enum with its own sound file.
    SoundEffect(String soundFileName) {
       try {
+    	  File dot = new File(".");
+    	  System.out.println("current dir is: " + dot.getCanonicalPath() );
+    	  
+    	  String soundFileLocation = dot.getCanonicalPath() + "/" + soundFileName;
+    	  File soundFile = new File( soundFileLocation );
+    	  System.out.println("Sound file is: " + soundFile.getCanonicalPath() );
+    	  if ( soundFile.exists() ) {
+    		  System.out.println("File exists");
+    		  if ( soundFile.canRead())  System.out.println("Can Read...");
+    	  }
+    	  
+    	  Class cl = this.getClass();
+    	  System.out.println("Class toString is:" + cl.toString());
+    	  System.out.println("Class name is:" + cl.getCanonicalName());
+    	  
          // Use URL (instead of File) to read from disk and JAR.
-         URL url = this.getClass().getClassLoader().getResource(soundFileName);
+         URL url = this.getClass().getResource(soundFileName);
+         //URL url = this.getClass().getClassLoader().getResource(soundFileLocation);
+         
+         System.out.println(" URL = " + url.getPath());
+         
          // Set up an audio input stream piped from the sound file.
          AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
+         //AudioInputStream audioInputStream = AudioSystem.getAudioInputStream( soundFile );
+         
+         System.out.println(" input stream is: " + audioInputStream.toString() );
+         
          // Get a clip resource.
          clip = AudioSystem.getClip();
          // Open audio clip and load samples from the audio input stream.
          clip.open(audioInputStream);
-      } catch (UnsupportedAudioFileException e) {
+      } 
+      catch (UnsupportedAudioFileException e) {
          e.printStackTrace();
-      } catch (IOException e) {
+      } 
+      catch (IOException e) {
          e.printStackTrace();
-      } catch (LineUnavailableException e) {
+      } 
+      catch (LineUnavailableException e) {
          e.printStackTrace();
+      }
+      catch( Exception e ){
+    	  System.out.println("ERROR!! " + e.getMessage());
+    	  e.printStackTrace();
+    	  System.exit(0);
       }
    }
 

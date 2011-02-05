@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 /**
  * main class for shuffle board game

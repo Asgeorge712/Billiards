@@ -1,4 +1,4 @@
-package bounce;
+package Billiards;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -28,12 +28,12 @@ public class Table extends JPanel implements MouseListener,
     boolean ready;     		// must be true to go again
     //boolean movement = true;
     public boolean scratched = false;
-    public boolean movingQ = false;
+    public boolean movingQ = true;
 
     Vector<Pocket> pockets;	//Collection of pockets on the table;
    	private Thread t;
 
-	public static final double CoF = 100;
+	public static final double CoF = 120;
 
 
     int targetCircle = -1;
@@ -88,6 +88,18 @@ public class Table extends JPanel implements MouseListener,
     }
 
 
+	/*************************************************
+	*
+	*
+	*
+	**************************************************/
+    public void newGame() {
+		//init circles.
+        populateCircles();
+        engine.setCircles( circles );
+        movingQ = true;
+
+    }
 
 
 	/*************************************************
@@ -182,10 +194,9 @@ public class Table extends JPanel implements MouseListener,
 
 		// name, Color color, double x, double y, int speed, double direction, int size) {
 
-		c = new Circle("Que Ball", Color.WHITE, 800+engine.TABLE_OFFSET_X, midy, 0, 0, 30);
+		c = new Circle("Que Ball", Color.WHITE, (SIZEX*.75)+engine.TABLE_OFFSET_X, midy, 0, 0, 30);
 		circles.add( c );
 
-/**/
 		//First Row (going down)
 		c = new Circle("One Ball", new Color(255, 255, 102),firstRow, midy-62, 0, 0, 30);
 		circles.add( c );
@@ -490,10 +501,12 @@ public class Table extends JPanel implements MouseListener,
 			//of the mouse at release from the center of the que ball.
 			// The speed has to be a number between 0 and 10.
 
-			double dx = x2 - x1;
-			double dy = y2 - y1;
-
-			double k = ( Math.abs(dx) > Math.abs(dy) ) ? 10/Math.abs(dx) : 10/Math.abs(dy);
+			double dx = (x2 - x1)/50;
+			double dy = (y2 - y1)/50;
+			System.out.println("X Distance=" + dx);
+			System.out.println("Y Distance=" + dy);
+			
+			double k = 1; //( Math.abs(dx) > Math.abs(dy) ) ? 5/Math.abs(dx) : 5/Math.abs(dy);
 			dx = dx * k;
 			dy = dy * k;
 
@@ -509,12 +522,12 @@ public class Table extends JPanel implements MouseListener,
 
 			//System.out.println( q.toString() );
 			aimingQueueBall = false;
-			SoundEffect.QUEUE.play();
+			SoundEffect.QUE.play();
 		}
 		else if ( movingQ ) {
 			movingQ = false;
-			queBall.x = e.getX()-15;
-			queBall.y = e.getY()-15;
+			//queBall.x = e.getX()-15;
+			//queBall.y = e.getY()-15;
 
 			Circle j;
 			for ( int a = 0 ; a < circles.size(); a++ ) {
@@ -561,87 +574,27 @@ public class Table extends JPanel implements MouseListener,
 			int mx = e.getX();
 			int my = e.getY();
 
-			double xRight  = SIZEX + engine.TABLE_OFFSET_X - 30;
-			double yBottom = SIZEY + engine.TABLE_OFFSET_Y - 30;
+			double newX = queBall.x;
+			double newY = queBall.y;
+			
+			double xRight = SIZEX + engine.TABLE_OFFSET_X - 15;
+			double xLeft  = (SIZEX*0.75) + engine.TABLE_OFFSET_X;
+			
+			double yBottom = SIZEY + engine.TABLE_OFFSET_Y-15;
+			double yTop    = engine.TABLE_OFFSET_Y+15;
 
-			if ( mx < xRight && mx > engine.TABLE_OFFSET_X && my < yBottom && my > engine.TABLE_OFFSET_Y ) {
-				queBall.x = e.getX()-15;
-				queBall.y = e.getY()-15;
-			}
+			if ( mx > xRight ) newX = xRight;
+			else if ( mx < xLeft  ) newX = xLeft;
+			else newX = mx;
+				
+			if ( my > yBottom ) newY = yBottom; 
+			else if ( my < yTop ) newY = yTop;
+			else newY = my;
+			
+			queBall.x = newX-15;
+			queBall.y = newY-15;
 		}
 	}
-
-
-
-	/***************************************************************
-	*
-	*
-		public class Runner implements Runnable {
-		public void run() {
-
-			Circle s1;
-			int speed;
-			double dir;
-			for (int i = 0; i < circles.size(); i++) {
-				s1 = circles.elementAt(i);
-				if ( s1.dx != 0 || s1.dy != 0 ) {
-					movement = true;
-					ready = false;
-				}
-			}
-
-			long time;
-			while ( movement ) {
-				time = System.currentTimeMillis();
-
-				Circle c;
-				boolean foundOneMoving = false;
-
-				for (int i = 0; i < circles.size(); i++) {
-					c = circles.elementAt(i);
-
-					//if ( !c.beingDragged() )
-					engine.calcPositions( circles );
-
-					if ( c.dx != 0 || c.dy != 0 ) {
-						//System.out.println( "Table.Runner: The " + c.name + " is moving! ");
-						foundOneMoving = true;
-					}
-				}
-
-				//revalidate();
-				//repaint();
-
-				//We will sleep for 10 milliseconds in total max.
-				time = System.currentTimeMillis() - time;
-				//System.out.println("this run took " + time + " milliseconds.");
-				time = 10 - time;
-				if ( time < 0 ) time = 0;
-				try {
-					Thread.sleep( time, 1 );
-				}
-				catch( InterruptedException e ) {
-					System.out.println("ERROR!! " + e.getMessage() );
-				}
-
-				if ( !foundOneMoving ) {
-					System.out.println("Nothing is moving, stop loop.");
-					movement = false;
-				}
-			}
-
-			if ( scratched ) {
-				bouncer.setStatus( "You scratched!!  You can move the Queue Ball." );
-				readdQueueBall();
-				movingQ = true;
-				scratched = false;
-			}
-			ready = true;
-		}
-	}
-*
-	***************************************************************/
-
 
 	/*********************************************
 	*
