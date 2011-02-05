@@ -18,8 +18,9 @@ public class Bouncer extends JFrame implements ActionListener {
 
 
     // widgets
-    JLabel status;  // to set status messages
-    Table  table;   // to reference the playing table
+    JLabel status; // to set status messages
+    Table  table;  // to reference the playing table
+    
     /**
      * default constructor.
      * builds the window
@@ -54,8 +55,7 @@ public class Bouncer extends JFrame implements ActionListener {
         // table
         table = new Table(this);
         add(table, BorderLayout.CENTER);
-
-
+        
         // menus
         buildMenus();
 

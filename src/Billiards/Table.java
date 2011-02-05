@@ -20,13 +20,14 @@ public class Table extends JPanel implements MouseListener,
 
 
     Vector<Circle> circles; // collection of the circles
+    Vector<Circle> fallen; // collection of the circles
+    
 	int queBallIndex = -1;
 
     Bouncer bouncer;   		// to reference shuffle window
     Engine  engine;    		// the engine that drives the game
-    Color[] colors;    		// disk colour (if no icon)
-    boolean ready;     		// must be true to go again
-    //boolean movement = true;
+    
+    public boolean ready;   // must be true to go again
     public boolean scratched = false;
     public boolean movingQ = true;
 
@@ -47,26 +48,27 @@ public class Table extends JPanel implements MouseListener,
      * @param shuffle
      ******************************************************/
     public Table(Bouncer bouncer) {
-        // always call super
+        //Always call super
         super();
 
-        // makes the moving display smoother
+        //Makes the moving display smoother
         setDoubleBuffered(true);
 
-        // default bg colour
+        //Default bg colour
         setBackground(new Color (51, 102, 51));
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 
-        // add mouse listeners
+        //Add mouse listeners
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        // reference to shuffle
+        //Reference to bouncer
         this.bouncer = bouncer;
 
-		//init circles.
+		//Initialize the circles.
         circles = new Vector<Circle>();
-        // start engine
+        
+        // Initialize engine
         engine = new Engine( this );
 
         populateCircles();
@@ -74,6 +76,7 @@ public class Table extends JPanel implements MouseListener,
 
         populatePockets();
 
+        //Start the Engine
         Thread e = new Thread( engine );
 		e.setPriority(Thread.NORM_PRIORITY);
         e.start();
@@ -119,7 +122,7 @@ public class Table extends JPanel implements MouseListener,
 
 			System.out.println("Adding que ball at (x,y): " + cx + "," + cy);
 
-			Circle c = new Circle("Que Ball", Color.WHITE, cx, cy, 0, 0, 30);
+			Circle c = new Circle(0, "Que Ball", Color.WHITE, cx, cy, 0, 0, 30);
 			circles.add( c );
 			queBallIndex = findQueBallIndex( circles );
 		}
@@ -186,57 +189,56 @@ public class Table extends JPanel implements MouseListener,
 	**************************************************/
 	public void populateCircles() {
 		circles = new Vector<Circle>();
+    	fallen = new Vector<Circle>();
+
 		Circle c;
 
-		double midy = SIZEY/2+engine.TABLE_OFFSET_Y-15;
-		double firstRow = 150 + engine.TABLE_OFFSET_X;
-		double bOffset = 16;
+		double midy = SIZEY/2 + Engine.TABLE_OFFSET_Y-15;
+		double firstRow = 150 + Engine.TABLE_OFFSET_X;
 
 		// name, Color color, double x, double y, int speed, double direction, int size) {
 
-		c = new Circle("Que Ball", Color.WHITE, (SIZEX*.75)+engine.TABLE_OFFSET_X, midy, 0, 0, 30);
+		c = new Circle(0, "Que Ball", Color.WHITE, (SIZEX*.75)+Engine.TABLE_OFFSET_X, midy, 0, 0, 30);
 		circles.add( c );
 
 		//First Row (going down)
-		c = new Circle("One Ball", new Color(255, 255, 102),firstRow, midy-62, 0, 0, 30);
+		c = new Circle(1, "One Ball", new Color(255, 255, 102),firstRow, midy-62, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Two Ball", new Color( 51, 51, 255), firstRow, midy-31, 0, 0, 30);
+		c = new Circle(2, "Two Ball", new Color( 51, 51, 255), firstRow, midy-31, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Three Ball", new Color(204, 0, 51), firstRow, midy, 0, 0, 30);
+		c = new Circle(3, "Three Ball", new Color(204, 0, 51), firstRow, midy, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Four Ball", new Color(255, 0, 153), firstRow, midy+31, 0, 0, 30);
+		c = new Circle(4, "Four Ball", new Color(255, 0, 153), firstRow, midy+31, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Five Ball", new Color(255, 102, 0), firstRow, midy+62, 0, 0, 30);
+		c = new Circle(5, "Five Ball", new Color(255, 102, 0), firstRow, midy+62, 0, 0, 30);
 		circles.add( c );
-
-
 
 		//Second Row
-		c = new Circle("Six Ball", new Color(51, 255, 0),  firstRow+31, midy-47, 0, 0, 30);
+		c = new Circle(6, "Six Ball", new Color(51, 255, 0),  firstRow+31, midy-47, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Seven Ball", new Color(102, 0, 0), firstRow+31, midy-16, 0, 0, 30);
+		c = new Circle(7, "Seven Ball", new Color(102, 0, 0), firstRow+31, midy-16, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Eight Ball", Color.BLACK,          firstRow+31, midy+16, 0, 0, 30);
+		c = new Circle(8, "Eight Ball", Color.BLACK,          firstRow+31, midy+16, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Nine Ball", new Color(204, 204, 0),firstRow+31, midy+47, 0, 0, 30);
+		c = new Circle(9, "Nine Ball", new Color(204, 204, 0),firstRow+31, midy+47, 0, 0, 30);
 		circles.add( c );
 
 
 		//Third Row
-		c = new Circle("Ten Ball", new Color(153, 0, 255), firstRow+62, midy-31, 0, 0, 30);
+		c = new Circle(10, "Ten Ball", new Color(153, 0, 255), firstRow+62, midy-31, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Eleven Ball", new Color(153, 0, 0), firstRow+62, midy, 0, 0, 30);
+		c = new Circle(11, "Eleven Ball", new Color(153, 0, 0), firstRow+62, midy, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Twelve Ball", new Color(255, 0, 153), firstRow+62, midy+31, 0, 0, 30);
+		c = new Circle(12, "Twelve Ball", new Color(255, 0, 153), firstRow+62, midy+31, 0, 0, 30);
 		circles.add( c );
 		//Forth Row
-		c = new Circle("Thirteen Ball", new Color(153, 255, 153), firstRow+93, midy-16, 0, 0, 30);
+		c = new Circle(13, "Thirteen Ball", new Color(153, 255, 153), firstRow+93, midy-16, 0, 0, 30);
 		circles.add( c );
-		c = new Circle("Fourteen Ball", new Color(0, 0, 153), firstRow+93, midy+16, 0, 0, 30);
+		c = new Circle(14, "Fourteen Ball", new Color(0, 0, 153), firstRow+93, midy+16, 0, 0, 30);
 		circles.add( c );
 
 		//Fifth Row
-		c = new Circle("Fifteen Ball", new Color(0, 0, 255), firstRow+124, midy, 0, 0, 30);
+		c = new Circle(15, "Fifteen Ball", new Color(0, 0, 255), firstRow+124, midy, 0, 0, 30);
 		circles.add( c );
 
 
@@ -278,8 +280,86 @@ public class Table extends JPanel implements MouseListener,
      ******************************************************/
     private void paintCircle( Graphics g, Circle c ) {
         if (c == null) return;
-        g.setColor( c.color );
-        g.fillOval((int)c.x - 1, (int)c.y - 1, c.size, c.size );
+        int fontSize = 10;
+        int dx = (int)c.x+8;
+        int dy = (int)c.y+8;
+        
+        if ( c.ballNumber > 0 && c.ballNumber < 9 ) {
+            g.setColor( c.color );
+            g.fillOval((int)c.x - 1, (int)c.y - 1, 30, 30 );
+
+            g.setColor( Color.WHITE );
+            g.fillOval(dx, dy, 12, 12 );
+
+            char[] num = { Character.forDigit(c.ballNumber, 10) }; 
+            Font font = new Font("Courier New", Font.PLAIN, fontSize);
+            g.setFont(font);
+            g.setColor( Color.BLACK );
+            g.drawChars(num, 0, num.length, (int)StrictMath.round(c.x+12), (int)StrictMath.round(c.y+17) );
+        }
+        else if ( c.ballNumber > 9 ) {
+            g.setColor( Color.WHITE );
+            g.fillOval((int)c.x - 1, (int)c.y - 1, 30, 30 );
+            
+            g.setColor( c.color );
+            int x = (int)c.x + 11;
+            int y = (int)c.y;
+            
+            g.drawLine(x+11, y+1, x+11, y+27);
+            g.drawLine(x+10, y+1, x+10, y+27);
+            g.drawLine(x+9,  y,   x+9, y+28);
+            g.drawLine(x+8,  y,   x+8, y+28);
+            
+            g.fillRect(x, y, 8, 29);
+            
+            g.drawLine(x-1, y,   x-1, y+28);
+            g.drawLine(x-2, y,   x-2, y+28);
+            g.drawLine(x-3, y+1, x-3, y+27);
+            g.drawLine(x-4, y+1, x-4, y+27);
+
+            g.setColor( Color.WHITE );
+            g.fillOval(dx, dy, 12, 12 );
+
+            int bi = c.ballNumber-10;
+            char[] num = { '1', Character.forDigit(bi, 10) }; 
+            Font font = new Font("Courier New", Font.PLAIN, fontSize);
+            g.setFont(font);
+            g.setColor( Color.BLACK );
+            g.drawChars(num, 0, num.length, (int)StrictMath.round(c.x+8), (int)StrictMath.round(c.y+17) );
+        }
+        else if ( c.ballNumber == 9 ) {
+            g.setColor( Color.WHITE );
+            g.fillOval((int)c.x - 1, (int)c.y - 1, 30, 30 );
+            
+            g.setColor( c.color );
+            int x = (int)c.x + 11;
+            int y = (int)c.y;
+            
+            g.drawLine(x+11, y+1, x+11, y+27);
+            g.drawLine(x+10, y+1, x+10, y+27);
+            g.drawLine(x+9,  y,   x+9, y+28);
+            g.drawLine(x+8,  y,   x+8, y+28);
+            
+            g.fillRect(x, y, 8, 29);
+            
+            g.drawLine(x-1, y,   x-1, y+28);
+            g.drawLine(x-2, y,   x-2, y+28);
+            g.drawLine(x-3, y+1, x-3, y+27);
+            g.drawLine(x-4, y+1, x-4, y+27);
+
+            g.setColor( Color.WHITE );
+            g.fillOval(dx, dy, 12, 12 );
+
+            char[] num = { Character.forDigit(c.ballNumber, 10) }; 
+            Font font = new Font("Courier New", Font.PLAIN, fontSize);
+            g.setFont(font);
+            g.setColor( Color.BLACK );
+            g.drawChars(num, 0, num.length, (int)StrictMath.round(c.x+12), (int)StrictMath.round(c.y+17) );
+        }
+        else if ( c.ballNumber == 0 ) {
+            g.setColor( Color.WHITE );
+            g.fillOval((int)c.x - 1, (int)c.y - 1, 30, 30 );
+        }
     }
 
 
@@ -321,6 +401,62 @@ public class Table extends JPanel implements MouseListener,
 	*
 	*
 	********************************************************/
+	private void paintTray( Graphics g) {
+		Graphics2D g2 = (Graphics2D)g;
+		String trayTitle = "The Fallen Balls";
+		char[] titleChars = trayTitle.toCharArray();
+		//String[] fontNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+		
+		Font font = new Font("Comic Sans MS", Font.BOLD, 20 );
+		g2.setFont(font);
+		g2.drawChars(titleChars, 0, titleChars.length , 450, 590);
+		g2.setColor( Color.GRAY );
+		g2.fill3DRect(299, 598, 450, 33, true);
+		g2.setColor( Color.BLACK );
+		g2.draw3DRect(298, 597, 451, 34, true);
+	
+		paintFallen( g );
+	}
+	
+
+	/*******************************************************
+	*
+	*
+	*
+	*
+	********************************************************/
+	public void paintFallen( Graphics g ) {
+		try {
+			for (Circle f : fallen)
+				paintCircle(g, f);
+		}
+		catch (Exception ex) {
+			System.out.println("ERROR IN paintFallen!: " + ex.getMessage());
+		}
+	}
+
+		
+	/*******************************************************
+	*
+	*
+	*
+	*
+	********************************************************/
+	public void addToFallen( Circle c ) {
+		System.out.println("Adding fallen ball: " + c.name );
+		fallen.add( c );
+		int fallenCount = fallen.size();
+		c.x = 270+(fallenCount*31);
+		c.y = 600;
+	}
+	
+	
+	/*******************************************************
+	*
+	*
+	*
+	*
+	********************************************************/
     private void paintQueueLine( Graphics g) {
 		g.setColor( Color.WHITE );
 		if ( queueLine == null ) return;
@@ -343,6 +479,7 @@ public class Table extends JPanel implements MouseListener,
 		//System.out.println("Painting table outline: ");
 		g.drawRect(	engine.TABLE_OFFSET_X-30, engine.TABLE_OFFSET_Y-30, SIZEX+60, SIZEY+60);
 		g.drawRect(	engine.TABLE_OFFSET_X, engine.TABLE_OFFSET_Y, SIZEX, SIZEY);
+		
 		int x25  = (int)StrictMath.round((SIZEX/4)   + engine.TABLE_OFFSET_X);
 		int x75  = (int)StrictMath.round((SIZEX/4*3) + engine.TABLE_OFFSET_X);
 		int midy = (int)StrictMath.round((SIZEY/2)   + engine.TABLE_OFFSET_Y);
@@ -353,6 +490,7 @@ public class Table extends JPanel implements MouseListener,
 		g.fillOval( x75-2, midy-2, 4, 4);
 
 		paintPockets( g );
+		paintTray( g );
 	}
 
 

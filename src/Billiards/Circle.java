@@ -20,6 +20,7 @@ public class Circle {
 	public double ddy;
 	public boolean canMove = false;
 	public boolean beingDragged = false;
+	public int ballNumber;
 
 
 	/**************************************************************
@@ -27,7 +28,8 @@ public class Circle {
 	*
 	*
 	***************************************************************/
-	public Circle(String name, Color color, double x, double y, int speed, double direction, int size) {
+	public Circle(int ballNumber, String name, Color color, double x, double y, int speed, double direction, int size) {
+		this.ballNumber = ballNumber;
 		this.name = name;
 		this.color = color;
 		this.size = size;

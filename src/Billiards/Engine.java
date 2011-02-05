@@ -32,15 +32,13 @@ public class Engine implements Runnable {
         round = 1; // keep track of what round its on
 
     /*****************************************
-     * consturctor. pass it the table
+     * Constuctor. pass it the table
      * this also starts new thread
      *
      * @param table the table the circles are on
      ****************************************/
     public Engine( Table table ) {
         this.table = table;
-        this.circles = circles;
-
     }
 
 
@@ -296,6 +294,7 @@ public class Engine implements Runnable {
 							table.queBallIndex = table.findQueBallIndex( circles );
 						}
 						System.out.println("The " + i.name + " fell in a hole!");
+						table.addToFallen(i);
 					}
 				}
 				else {
